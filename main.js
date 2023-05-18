@@ -1,4 +1,4 @@
-let pageCount = 1;
+let pageCount = 4;
 
 let prevButton = document.getElementById("prev-button");
 let nextButton = document.getElementById("next-button");
@@ -51,19 +51,21 @@ function creatCard(imgUrl, author) {
   return card;
 }
 
-nextButton.addEventListener("click", function () {
+nextButton.addEventListener("click", async function () {
   pageCount += 1;
   if (pageCount > 1) {
     prevButton.disabled = false;
   }
-  loadImage();
+  await loadImage();
+  downloadPhoto();
 });
-prevButton.addEventListener("click", function () {
+prevButton.addEventListener("click", async function () {
   pageCount -= 1;
   if (pageCount == 1) {
     prevButton.disabled = true;
   }
-  loadImage();
+  await loadImage();
+  downloadPhoto();
 });
 
 function downloadPhoto() {
@@ -86,6 +88,7 @@ function downloadPhoto() {
     });
     image.addEventListener("click", async function () {
       await navigator.clipboard.writeText(imageUrl);
+      alert("Copied: " + imageUrl);
     });
   }
 }
