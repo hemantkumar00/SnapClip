@@ -28,6 +28,14 @@ async function loadImage() {
 })();
 
 function creatCard(imgUrl, author) {
+  const subContainer = document.createElement("div");
+  subContainer.classList.add("sub-container");
+  const labelSpan = document.createElement("span");
+  labelSpan.classList.add("label");
+  labelSpan.style.display = "none";
+  // labelSpan.textContent = "Click to copy";
+  subContainer.appendChild(labelSpan);
+
   const card = document.createElement("div");
   card.classList.add("card");
   const img = document.createElement("img");
@@ -47,8 +55,9 @@ function creatCard(imgUrl, author) {
   section.appendChild(button);
   card.append(img);
   card.append(section);
+  subContainer.append(card);
 
-  return card;
+  return subContainer;
 }
 
 nextButton.addEventListener("click", async function () {
@@ -70,11 +79,14 @@ prevButton.addEventListener("click", async function () {
 
 function downloadPhoto() {
   let containers = document.querySelectorAll(".card");
+  let container = document.querySelectorAll(".sub-container");
+  console.log(container);
 
-  for (i of containers) {
-    let button = i.childNodes[1].childNodes[1];
-    let image = i.childNodes[0];
-    let imageUrl = i.childNodes[0].src;
+  for (i of container) {
+    let button = i.childNodes[1].childNodes[1].childNodes[1];
+    let image = i.childNodes[1].childNodes[0];
+    let span = i.childNodes[0];
+    let imageUrl = i.childNodes[1].childNodes[0].src;
     button.addEventListener("click", async function () {
       const image = await fetch(imageUrl);
       const imageBlog = await image.blob();
@@ -86,9 +98,20 @@ function downloadPhoto() {
       link.click();
       document.body.removeChild(link);
     });
+    image.addEventListener("mouseover", function () {
+      span.innerHTML = "Click to copy";
+      span.style.display = "";
+    });
+    image.addEventListener("mouseout", function () {
+      span.style.display = "none";
+    });
     image.addEventListener("click", async function () {
+      span.innerHTML = "Coppied";
+
       await navigator.clipboard.writeText(imageUrl);
-      alert("Copied: " + imageUrl);
+      console.log(i.childNodes[0]);
+
+      // alert("Copied: " + imageUrl);
     });
   }
 }
